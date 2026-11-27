@@ -191,7 +191,9 @@ def _exclude(workspace: Path) -> None:
     # gitignore syntax: escape the glob characters so each line matches exactly one path
     lines = ["/" + "".join("\\" + c if c in "\\*?[!# " else c for c in rel) for rel in big if "\n" not in rel]
     (store(workspace) / "info").mkdir(exist_ok=True)
-    own = [f"/{store(workspace).relative_to(workspace.resolve()).as_posix()}/"] if store(workspace).is_relative_to(workspace.resolve()) else []
+    # both resolved: a symlink, or a Windows short name (C:\Users\RUNNER~1) on one side, must not hide the match
+    s, w = store(workspace).resolve(), workspace.resolve()
+    own = [f"/{s.relative_to(w).as_posix()}/"] if s.is_relative_to(w) else []
     (store(workspace) / "info" / "exclude").write_text("\n".join(SKIP + own + lines) + "\n", encoding="utf-8")
     if held := git(workspace, "ls-files", "-z", "-ci", "--exclude-standard").stdout:
         git(workspace, "--literal-pathspecs", "rm", "--cached", "-q", "--ignore-unmatch",

@@ -21,7 +21,8 @@ if sys.platform == "win32" and ON:  # Windows port (2026-11-05)
         _k, _mode = ctypes.windll.kernel32, ctypes.c_uint32()
         if _k.GetConsoleMode(_h := _k.GetStdHandle(-11), ctypes.byref(_mode)):
             _k.SetConsoleMode(_h, _mode.value | 0x0004)  # ENABLE_VIRTUAL_TERMINAL_PROCESSING
-    for _s in (sys.stdout, sys.stderr):  # the braille spinner must never crash a cp1252 console
+if sys.platform == "win32":  # pipes too: a ✓ or ☐ printed to a cp1252 pipe (cracked -p > log) crashed (CI, 2026-11-27)
+    for _s in (sys.stdout, sys.stderr):
         with contextlib.suppress(Exception):
             _s.reconfigure(encoding="utf-8", errors="replace")
 
