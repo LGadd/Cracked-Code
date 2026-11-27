@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/logo.png" alt="CRACKED code" width="720"></p>
+
 # Cracked Code
 
 A small, fast coding agent for the terminal, **built for Qwen3.8 Flash-Next on

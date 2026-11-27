@@ -33,6 +33,7 @@ class Wrap(unittest.TestCase):
 
 
 @mock.patch.object(ui, "ON", True)
+@mock.patch.object(ui, "TRUE", True)  # 24-bit codes, as in a terminal with COLORTERM=truecolor (CI has none)
 class Pretty(unittest.TestCase):
     def test_headings_and_steps_get_gaps_and_colour(self):
         out = ui.pretty("## Plan\nSome intro.\n1. First thing\n2. Second thing\n- a bullet\n**Next steps:**\n3. Third")
