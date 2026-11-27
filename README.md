@@ -3,8 +3,8 @@
 # Cracked Code
 
 A small, fast coding agent for the terminal, **built for Qwen3.8 Flash-Next on
-[Strata](https://github.com/Niko1221/Strata), on Linux**. That pairing is the only one tuned and tested before a
-release. Other models, servers and systems can work, but they get no tuning and no testing (see Requirements). Pure Python, two small dependencies (`prompt_toolkit` for the
+[Strata](https://github.com/Niko1221/Strata)**, on Linux, with Windows in beta. Qwen3.8 on Strata is the only
+model and server tuned and tested before a release; others work, best effort (see Requirements). Pure Python, two small dependencies (`prompt_toolkit` for the
 prompt, `pygments` for code colours), native tool calling, about 1,100 tokens of fixed prompt.
 
 On a local GPU every prompt token costs reading time, so Cracked keeps the prompt lean and the turns few. On the
@@ -24,9 +24,9 @@ rule, *don't wreck the work*, and three mechanical safeties so that damage is al
 
 ## Requirements
 
-- **Linux.** That is the only supported system for now. Windows (shell commands run in Git Bash) and macOS can be
-  set up with some tweaks, but they aren't supported or tested before a release. [docs/windows.md](docs/windows.md)
-  has the Windows notes.
+- **Linux**, or **Windows 10/11 in beta** with Git for Windows (the model's shell commands run in Git Bash).
+  Windows runs the offline tests in CI and has a tested setup with Ollama: [docs/windows.md](docs/windows.md).
+  macOS may work but is untested and unsupported.
 - Python 3.11 or newer.
 - A server with an OpenAI-compatible `/v1/chat/completions` and native tool calls. **Tested:** Strata serving
   Qwen3.8 Flash-Next. **Best effort:** llama.cpp's `llama-server`, Ollama, LM Studio, vLLM and hosted APIs. These
@@ -39,7 +39,8 @@ rule, *don't wreck the work*, and three mechanical safeties so that damage is al
 pipx install cracked-code        # or: uv tool install cracked-code
 ```
 
-From a checkout: `uv venv .venv && uv pip install --python .venv/bin/python -e .`, then `.venv/bin/cracked`.
+Before it is on PyPI, or for a fixed version: `uv tool install git+https://github.com/LGadd/Cracked-Code.git@v0.1.0`.
+Windows: see [docs/windows.md](docs/windows.md). From a checkout: `uv venv .venv && uv pip install --python .venv/bin/python -e .`, then `.venv/bin/cracked`.
 
 ## 60-second start
 
@@ -154,7 +155,7 @@ live-tests/run-all.sh                         # 7 live tests against a real mode
 - [docs/gotchas.md](docs/gotchas.md): measured traps, read before you debug
 - [docs/implemented.md](docs/implemented.md): how each part works, with the test evidence
 - [docs/plan-mode.md](docs/plan-mode.md): the design of `/plan` and the checklist runner
-- [docs/windows.md](docs/windows.md): notes for Windows (unsupported, but it works with Git Bash)
+- [docs/windows.md](docs/windows.md): Windows (beta): the tested setup, install steps, what differs
 - [CHANGELOG.md](CHANGELOG.md) · [CONTRIBUTING.md](CONTRIBUTING.md)
 
 The docs mention a web dashboard (a live view of the model, GPU and sessions, plus mode switches). It is not in this

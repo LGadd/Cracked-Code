@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- **Windows is supported in beta.** A clean install from GitHub on Windows 11 (Python 3.14, Git for Windows, Ollama
+  with `glm-5.3-flash:cloud`) passed a write-run task, `cracked -c`, an edit-run task and `/undo`. The setup and its
+  install steps are in `docs/windows.md`.
+
 ## 0.1.0 (2026-11-27)
 
 The first public release: the terminal harness. The web dashboard follows in a later release.
