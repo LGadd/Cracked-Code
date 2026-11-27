@@ -16,20 +16,21 @@ from . import __version__, agent, config, live, llm, plan, repl, safety, tools, 
 LOGO = """\
  ▄████▄  ██▀███   ▄▄▄       ▄████▄   ██ ▄█▀▓█████ ▓█████▄
 ▒██▀ ▀█ ▓██ ▒ ██▒▒████▄    ▒██▀ ▀█   ██▄█▒ ▓█   ▀ ▒██▀ ██▌
-▒▓█    ▄▓██ ░▄█ ▒▒██  ▀█▄  ▒▓█    ▄ ▓███▄░ ▒███   ░██   █▌
-▒▓▓▄ ▄██▒██▀▀█▄  ░██▄▄▄▄██ ▒▓▓▄ ▄██▒▓██ █▄ ▒▓█  ▄ ░▓█▄   ▌
-▒ ▓███▀ ░██▓ ▒██▒ ▓█   ▓██▒▒ ▓███▀ ░▒██▒ █▄░▒████▒░▒████▓
-░ ░▒ ▒  ░ ▒▓ ░▒▓░ ▒▒   ▓▒█░░ ░▒ ▒  ░▒ ▒▒ ▓▒░░ ▒░ ░ ▒▒▓  ▒   code"""
+▒▓█    ▄▓██ ░▄█ ▒▒██  ▀█▄  ▒▓█    ▄ ▓███▄░ ▒███   ░██   █▌   ▄▄▄ ▄▄▄ ▄▄█ ▄▄▄
+▒▓▓▄ ▄██▒██▀▀█▄  ░██▄▄▄▄██ ▒▓▓▄ ▄██▒▓██ █▄ ▒▓█  ▄ ░▓█▄   ▌   █   █ █ █ █ █▄█
+▒ ▓███▀ ░██▓ ▒██▒ ▓█   ▓██▒▒ ▓███▀ ░▒██▒ █▄░▒████▒░▒████▓    █▄▄ █▄█ █▄█ █▄▄
+░ ░▒ ▒  ░ ▒▓ ░▒▓░ ▒▒   ▓▒█░░ ░▒ ▒  ░▒ ▒▒ ▓▒░░ ▒░ ░ ▒▒▓  ▒    ░▒▒ ░▒░ ░▒░ ░▒▒"""
 
 
 FALLBACK_CONTEXT = 262144  # budget when neither the config nor the server gives a window (Qwen3.8's)
 
 
 def banner(rows: list[tuple[str, str]]) -> str:
-    """The logo (one line when the terminal is under 68 columns or 40 rows), then label/value rows lined up:
+    """The logo (one line when the terminal is too narrow for it, about 84 columns, or under 40 rows), then label/value rows lined up:
     the first two values (model, workspace) bright, the rest in the body colour, labels muted."""
     size = shutil.get_terminal_size((100, 50))
-    logo = (f"{LOGO} {__version__}" if size.columns >= 68 and size.lines >= 40 else f"▓▒░ CRACKED code {__version__}")
+    wide = max(len(ln) for ln in LOGO.splitlines()) + len(__version__) + 2  # the art plus " 0.1.0", without wrapping
+    logo = (f"{LOGO} {__version__}" if size.columns >= wide and size.lines >= 40 else f"▓▒░ CRACKED code {__version__}")
     if not ui.ON:
         return logo + "\n\n" + "\n".join(f"{k:<10} {v}" for k, v in rows)
     return (ui.paint(logo, ui.NEON, bold=True) + "\n\n"
