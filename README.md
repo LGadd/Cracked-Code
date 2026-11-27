@@ -2,6 +2,8 @@
 
 # Cracked Code
 
+**Website: [cracked.gaddgames.co.uk](https://cracked.gaddgames.co.uk)**
+
 A small, fast coding agent for the terminal, **built for Qwen3.8 Flash-Next on
 [Strata](https://github.com/Niko1221/Strata)**, on Linux, with Windows in beta. Qwen3.8 on Strata is the only
 model and server tuned and tested before a release; others work, best effort (see Requirements). Pure Python, two small dependencies (`prompt_toolkit` for the
