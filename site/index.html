@@ -3,192 +3,234 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cracked Code: a fast coding agent for local models</title>
-<meta name="description" content="Cracked Code is a small, fast coding agent for your terminal. Built for Qwen3.8 Flash-Next on Strata: 2× faster than Qwen Code and 7–10× fewer tokens on the same tasks.">
-<meta name="theme-color" content="#0b0f0d">
+<title>Cracked Code: the fast coding agent for local models</title>
+<meta name="description" content="A small, fast coding agent for your terminal, built for Qwen3.8 Flash-Next on Strata. Same score as Claude Code and Qwen Code, in half the time, with 8–10× fewer tokens.">
+<meta name="theme-color" content="#06090a">
 <meta property="og:title" content="Cracked Code">
-<meta property="og:description" content="A small, fast coding agent for your terminal, built for local models.">
+<meta property="og:description" content="The fast coding agent for local models. Same score, half the wait.">
 <meta property="og:image" content="https://cracked.gaddgames.co.uk/logo.png">
 <meta property="og:url" content="https://cracked.gaddgames.co.uk/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
-<script src="copy.js" defer></script>
+<script src="app.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#install">Skip to install</a>
+<div class="bg" aria-hidden="true"><div class="grid"></div><div class="glow g1"></div><div class="glow g2"></div></div>
 
-<header class="top">
-  <nav class="wrap nav" aria-label="Sections">
-    <a class="brand" href="#">Cracked&nbsp;Code</a>
-    <ul>
-      <li><a href="#install">Install</a></li>
-      <li><a href="#speed">Speed</a></li>
-      <li><a href="#use">Use</a></li>
-      <li><a href="#safety">Safety</a></li>
-      <li><a href="https://github.com/LGadd/Cracked-Code">GitHub</a></li>
-    </ul>
-  </nav>
+<header class="nav">
+  <div class="wrap navin">
+    <a class="brand" href="#top" aria-label="Cracked Code, home"><span class="cursor" aria-hidden="true">&gt;_</span> cracked<span class="dim">code</span></a>
+    <nav aria-label="Sections">
+      <a href="#speed">Speed</a>
+      <a href="#features">Features</a>
+      <a href="#install">Install</a>
+      <a class="gh" href="https://github.com/LGadd/Cracked-Code"><svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a>
+    </nav>
+  </div>
 </header>
 
-<main>
+<main id="top">
+  <!-- HERO -->
   <section class="hero wrap">
-    <img class="logo" src="logo.png" width="1925" height="384" alt="CRACKED code, in green block letters">
-    <h1>A small, fast coding agent for your terminal.</h1>
-    <p class="lead">Built for <strong>Qwen3.8 Flash-Next</strong> on <strong>Strata</strong>, running on your own GPU. You type a task; it reads, edits, runs and checks your code until it's done.</p>
-    <ul class="facts" aria-label="Key facts">
-      <li><b>2×</b> faster than Qwen Code</li>
-      <li><b>7–10×</b> fewer tokens</li>
-      <li><b>/undo</b> for every task</li>
-      <li><b>MIT</b> licensed</li>
-    </ul>
-    <div class="cta">
-      <a class="btn primary" href="#install">Install in 1 minute</a>
-      <a class="btn" href="https://github.com/LGadd/Cracked-Code">View on GitHub</a>
+    <p class="badge"><span class="dot" aria-hidden="true"></span> v0.1.0 · open source · MIT</p>
+    <img class="mark" src="logo-mark.png" width="1845" height="304" alt="CRACKED code">
+    <h1>The coding agent that doesn't keep your <span class="hl">GPU</span> waiting.</h1>
+    <p class="lead">A small, fast agent for your terminal, built for <b>Qwen3.8 Flash-Next</b> on <b>Strata</b>. Same score as Claude Code and Qwen Code. Half the wait.</p>
+
+    <div class="oneliner">
+      <span class="prompt" aria-hidden="true">$</span>
+      <code id="hero-cmd">uv tool install git+https://github.com/LGadd/Cracked-Code.git@v0.1.0</code>
+      <button class="copy" type="button" data-copy="#hero-cmd" aria-label="Copy install command">Copy</button>
     </div>
-  </section>
-
-  <section class="wrap tldr" aria-labelledby="tldr-h">
-    <h2 id="tldr-h">The short version</h2>
-    <ol class="cards">
-      <li><span class="n">1</span><div><b>Install</b><p>One command. Python 3.11+ and git.</p></div></li>
-      <li><span class="n">2</span><div><b>Point it at a model</b><p>Strata on port 8080 needs no config.</p></div></li>
-      <li><span class="n">3</span><div><b>Type a task</b><p>Run <code>cracked</code> in your project folder.</p></div></li>
-    </ol>
-  </section>
-
-  <section id="install" class="wrap" aria-labelledby="install-h">
-    <h2 id="install-h">Install</h2>
-    <p class="sum">Linux. Windows works too, in beta.</p>
-
-    <div class="step">
-      <h3><span class="n">1</span> Check your model server is up</h3>
-      <p>Strata serving Qwen3.8 Flash-Next, on its default port:</p>
-      <div class="code"><pre><code>curl -s http://127.0.0.1:8080/v1/models</code></pre><button class="copy" type="button">Copy</button></div>
+    <div class="ctas">
+      <a class="btn primary" href="#install">Get started <span aria-hidden="true">→</span></a>
+      <a class="btn ghost" href="https://github.com/LGadd/Cracked-Code">Star on GitHub</a>
     </div>
 
-    <div class="step">
-      <h3><span class="n">2</span> Install Cracked Code</h3>
-      <div class="code"><pre><code>uv tool install git+https://github.com/LGadd/Cracked-Code.git@v0.1.0</code></pre><button class="copy" type="button">Copy</button></div>
-      <p class="alt">No uv? Use pipx instead:</p>
-      <div class="code"><pre><code>pipx install git+https://github.com/LGadd/Cracked-Code.git@v0.1.0</code></pre><button class="copy" type="button">Copy</button></div>
-    </div>
-
-    <div class="step">
-      <h3><span class="n">3</span> Run it in your project</h3>
-      <div class="code"><pre><code>cd ~/my-project
-cracked</code></pre><button class="copy" type="button">Copy</button></div>
-      <p>Or one task and exit: <code>cracked -p "add a --verbose flag to cli.py"</code></p>
-    </div>
-
-    <details class="more">
-      <summary>Using another server? (llama.cpp, Ollama, LM Studio)</summary>
-      <p>Put this in <code>~/.config/cracked/config.toml</code>. These work, but only Strata is tuned and tested.</p>
-      <div class="code"><pre><code>base_url = "http://127.0.0.1:11434/v1"
-model = "your-model-name"</code></pre><button class="copy" type="button">Copy</button></div>
-    </details>
-    <details class="more">
-      <summary>On Windows? (beta)</summary>
-      <p>Install <b>Git for Windows</b> first: the model's shell commands run in Git Bash. Then use the same <code>uv tool install</code> command. Tested on Windows 11 with Ollama. Full guide: <a href="https://github.com/LGadd/Cracked-Code/blob/main/docs/windows.md">docs/windows.md</a>.</p>
-    </details>
-  </section>
-
-  <section class="wrap" aria-labelledby="look-h">
-    <h2 id="look-h">What a task looks like</h2>
-    <p class="sum">One line per step. The answer under a green bar. A rule when it's done.</p>
-    <figure class="term" aria-label="Example terminal session">
-      <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
-<pre><span class="g b">&gt;_</span> add a --verbose flag to cli.py and test it
-<span class="g">●</span> <span class="i">Reading the entry point first.</span>
-  <span class="g b">✓</span> <span class="p b">read   </span><span class="i">cli.py</span>  <span class="m">84 lines</span>
-  <span class="g b">✓</span> <span class="p b">edit   </span><span class="i">cli.py</span>  <span class="m">+6 −1</span>
-  <span class="g b">✓</span> <span class="p b">shell  </span><span class="i">python -m pytest -q</span>  <span class="m">3 lines · 2.4s</span>
-
-<span class="g">│</span> Added <span class="g">--verbose</span>: it sets logging to DEBUG.
-<span class="g">│</span> All 12 tests pass.
-
-<span class="m">── done · 31s · 4 turns · 3 tool calls · 1 file +6 −1 ────────</span></pre>
+    <figure class="term" aria-label="Example session: Cracked Code adds a --verbose flag, edits cli.py, runs the tests, and reports that all 12 pass.">
+      <div class="tbar" aria-hidden="true"><i></i><i></i><i></i><span>~/my-project — cracked</span><button class="replay" type="button" tabindex="-1">↻ replay</button></div>
+      <pre class="tbody" aria-hidden="true" id="term"><span class="l"><span class="g b">&gt;_</span> add a --verbose flag to cli.py and test it</span>
+<span class="l"><span class="g">●</span> <span class="i">Reading the entry point first.</span></span>
+<span class="l">  <span class="g b">✓</span> <span class="p b">read   </span><span class="i">cli.py</span>  <span class="m">84 lines</span></span>
+<span class="l">  <span class="g b">✓</span> <span class="p b">edit   </span><span class="i">cli.py</span>  <span class="m">+6 −1</span></span>
+<span class="l">  <span class="g b">✓</span> <span class="p b">shell  </span><span class="i">python -m pytest -q</span>  <span class="m">3 lines · 2.4s</span></span>
+<span class="l"> </span>
+<span class="l"><span class="g">│</span> Added <span class="g">--verbose</span>: it sets logging to DEBUG.</span>
+<span class="l"><span class="g">│</span> All 12 tests pass.</span>
+<span class="l"> </span>
+<span class="l"><span class="m">── done · 31s · 4 turns · 3 tool calls · 1 file +6 −1 ──────────</span></span></pre>
     </figure>
   </section>
 
-  <section id="speed" class="wrap" aria-labelledby="speed-h">
-    <h2 id="speed-h">Why it's fast</h2>
-    <p class="sum">Same model, same 11 tasks, same score. Less waiting.</p>
-    <p>On a local GPU, every prompt token costs reading time. Cracked keeps its prompt small (about 1,100 tokens) and does more per turn, so the model reads less and you wait less.</p>
+  <!-- STATS -->
+  <section class="stats wrap" aria-label="Key numbers">
+    <div class="stat"><b>2.04×</b><span>faster than Qwen Code<br>on Qwen3.8, same tasks</span></div>
+    <div class="stat"><b>8–10×</b><span>fewer tokens than<br>Claude Code &amp; Qwen Code</span></div>
+    <div class="stat"><b>68/68</b><span>checks passed, every run,<br>on 3 different models</span></div>
+    <div class="stat"><b>~1.1k</b><span>tokens of fixed prompt.<br>Two small dependencies.</span></div>
+  </section>
 
-    <figure class="bars" aria-labelledby="bars-cap">
-      <figcaption id="bars-cap">Whole suite, Qwen3.8 Flash-Next on one RTX 5070 Ti. Lower is better.</figcaption>
-      <div class="row"><span class="who">Cracked Code</span><span class="track"><span class="fill best" style="--w:49%"></span></span><span class="val">404 s</span></div>
-      <div class="row"><span class="who">Claude Code</span><span class="track"><span class="fill" style="--w:72%"></span></span><span class="val">592 s</span></div>
-      <div class="row"><span class="who">Qwen Code</span><span class="track"><span class="fill" style="--w:100%"></span></span><span class="val">825 s</span></div>
-    </figure>
+  <!-- SPEED -->
+  <section id="speed" class="wrap block">
+    <p class="eyebrow">Benchmarks</p>
+    <h2>Same answers. Less waiting.</h2>
+    <p class="sub">11 real coding tasks, 68 checks. Every harness got full marks, so the only difference is how long you wait.</p>
 
-    <div class="tablewrap">
-      <table>
-        <caption>All three harnesses scored 68/68 on every model. Median of 3 runs, 2026-11-07.</caption>
-        <thead><tr><th scope="col">Harness</th><th scope="col">Qwen3.8 (local)</th><th scope="col">GLM 5.3 Flash (cloud)</th><th scope="col">DeepSeek V4.1 Flash (cloud)</th></tr></thead>
-        <tbody>
-          <tr class="win"><th scope="row">Cracked Code</th><td>404 s · 174k tok</td><td>126 s · 134k tok</td><td>80 s · 159k tok</td></tr>
-          <tr><th scope="row">Claude Code</th><td>592 s · 1.43M tok</td><td>144 s · 1.27M tok</td><td>137 s · 1.10M tok</td></tr>
-          <tr><th scope="row">Qwen Code</th><td>825 s · 1.74M tok</td><td>359 s · 1.30M tok</td><td>167 s · 1.31M tok</td></tr>
-        </tbody>
-      </table>
+    <div class="bench">
+      <div class="seg" role="group" aria-label="Choose a model">
+        <button type="button" data-set="local" aria-pressed="true">Qwen3.8 · local GPU</button>
+        <button type="button" data-set="glm" aria-pressed="false">GLM 5.3 Flash · cloud</button>
+        <button type="button" data-set="ds" aria-pressed="false">DeepSeek V4.1 Flash · cloud</button>
+      </div>
+      <div class="chart" id="chart">
+        <div class="bar win"><span class="who">Cracked Code</span><span class="track"><span class="fill" style="--w:49%"></span></span><span class="t">404 s</span><span class="tok">174k tok</span></div>
+        <div class="bar"><span class="who">Claude Code</span><span class="track"><span class="fill" style="--w:72%"></span></span><span class="t">592 s</span><span class="tok">1.43M tok</span></div>
+        <div class="bar"><span class="who">Qwen Code</span><span class="track"><span class="fill" style="--w:100%"></span></span><span class="t">825 s</span><span class="tok">1.74M tok</span></div>
+      </div>
+      <p class="callout" id="callout" aria-live="polite"><b>2.04× faster</b> than Qwen Code, <b>1.47×</b> faster than Claude Code.</p>
+      <p class="note">Wall time for the whole suite, median of 3 runs, 2026-11-07. Local runs on one RTX 5070 Ti (16 GB).</p>
     </div>
   </section>
 
-  <section id="use" class="wrap" aria-labelledby="use-h">
-    <h2 id="use-h">The commands you'll use</h2>
-    <p class="sum">Type <code>/help</code> for the full list.</p>
-    <dl class="cmds">
-      <div><dt><code>/undo</code></dt><dd>Put the files back to before the last task.</dd></div>
-      <div><dt><code>/diff</code></dt><dd>See everything changed this session.</dd></div>
-      <div><dt><code>/plan &lt;goal&gt;</code></dt><dd>Research and write a plan, then run it step by step.</dd></div>
-      <div><dt><code>/btw &lt;question&gt;</code></dt><dd>Ask a side question. It isn't kept.</dd></div>
-      <div><dt><code>@file</code></dt><dd>Send a file with your task. Saves a turn.</dd></div>
-      <div><dt><code>cracked -c</code></dt><dd>Carry on with this folder's last session.</dd></div>
-    </dl>
+  <!-- FEATURES -->
+  <section id="features" class="wrap block">
+    <p class="eyebrow">Features</p>
+    <h2>Small on purpose. Every part earns its place.</h2>
+    <div class="bento">
+      <article class="card big">
+        <div class="mini" role="img" aria-label="Tokens used for the whole suite on Qwen3.8: Cracked Code 174 thousand, Claude Code 1.43 million, Qwen Code 1.74 million.">
+          <p class="minitit">Tokens for the whole suite · Qwen3.8</p>
+          <div class="mrow win"><span>Cracked Code</span><i style="--w:10%"></i><b>174k</b></div>
+          <div class="mrow"><span>Claude Code</span><i style="--w:82%"></i><b>1.43M</b></div>
+          <div class="mrow"><span>Qwen Code</span><i style="--w:100%"></i><b>1.74M</b></div>
+        </div>
+        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
+        <h3>A lean prompt is a fast prompt</h3>
+        <p>On a local GPU, every token the model reads costs time. Cracked sends about 1,100 tokens of fixed prompt, keeps Strata's cache warm, and batches edits with their checks, so the model reads less and you wait less.</p>
+      </article>
+      <article class="card">
+        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></div>
+        <h3>/undo anything</h3>
+        <p>A git snapshot before every turn, in a separate store. Your own history stays clean.</p>
+      </article>
+      <article class="card">
+        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg></div>
+        <h3>Steer it mid-task</h3>
+        <p>Type while it works. It reads your message before its next step.</p>
+      </article>
+      <article class="card">
+        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg></div>
+        <h3>/plan, then run it</h3>
+        <p>It researches, writes a plan, and walks through it one step at a time.</p>
+      </article>
+      <article class="card">
+        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></div>
+        <h3>@files</h3>
+        <p>Send a file with your task and save a turn. Fuzzy-finds across the repo.</p>
+      </article>
+      <article class="card">
+        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h4M7 13h10M7 17h6"/></svg></div>
+        <h3>CRACKED.md</h3>
+        <p>Project rules once, not every session. <code>/init</code> drafts one from your repo.</p>
+      </article>
+    </div>
 
-    <h3>Keys</h3>
-    <dl class="cmds">
-      <div><dt><kbd>Shift</kbd>+<kbd>Tab</kbd></dt><dd>Change mode (below).</dd></div>
-      <div><dt><kbd>Ctrl</kbd>+<kbd>O</kbd></dt><dd>Show the details: reasoning, turns, diffs.</dd></div>
-      <div><dt><kbd>Esc</kbd></dt><dd>Stop the task. The conversation is kept.</dd></div>
-      <div><dt>Type + <kbd>Enter</kbd></dt><dd>Steer it while it works. It reads your message next.</dd></div>
-    </dl>
-
-    <h3>Three modes</h3>
-    <ul class="modes">
-      <li><b>Manual</b><span>Edits ask you first, with the diff shown. The default.</span></li>
-      <li><b>Fuck It</b><span>Everything auto-approved. Deletes still ask.</span></li>
-      <li><b>Investigate</b><span>Read only. It looks, reports, and stops.</span></li>
-    </ul>
-  </section>
-
-  <section id="safety" class="wrap" aria-labelledby="safety-h">
-    <h2 id="safety-h">Safety: read this</h2>
-    <div class="warn">
-      <p><b>It runs shell commands on your machine, with no sandbox.</b> The model can do anything your user account can do.</p>
-      <ul>
-        <li><b>Snapshots:</b> before every turn your folder is saved to a separate git store, so <code>/undo</code> and <code>/diff</code> always work. Your own git history is untouched.</li>
-        <li><b>Approvals:</b> in manual mode, edits ask first. Deletes always ask.</li>
-        <li><b>Deny-list:</b> blocks the unrecoverable (<code>rm -rf /</code>, <code>mkfs</code>, …). It's a seatbelt, not a security boundary.</li>
-      </ul>
-      <p>Point it at a project folder, not your home folder. Use a VM for anything you can't afford to lose.</p>
+    <div class="modes">
+      <div class="mode"><span class="chip c1">MANUAL</span><p>Edits ask first, with the diff shown. The default.</p></div>
+      <div class="mode"><span class="chip c2">FUCK IT MODE</span><p>Everything auto-approved. Deletes still ask.</p></div>
+      <div class="mode"><span class="chip c3">INVESTIGATE</span><p>Read only. It looks, reports, and stops.</p></div>
+      <p class="modehint"><kbd>Shift</kbd> + <kbd>Tab</kbd> switches mode, even mid-task.</p>
     </div>
   </section>
 
-  <section class="wrap" aria-labelledby="req-h">
-    <h2 id="req-h">What you need</h2>
-    <ul class="checks">
-      <li><b>Linux</b>, or <b>Windows 10/11</b> in beta with Git for Windows</li>
-      <li><b>Python 3.11</b> or newer, and <b>git</b></li>
-      <li><b>A model server</b> with tool calls. Tested: Strata + Qwen3.8 Flash-Next. Best effort: llama.cpp, Ollama, LM Studio, vLLM.</li>
-    </ul>
+  <!-- INSTALL -->
+  <section id="install" class="wrap block">
+    <p class="eyebrow">Install</p>
+    <h2>Running in about a minute.</h2>
+    <p class="sub">You need Python 3.11+, git, and a model server. Strata on port 8080 needs no config at all.</p>
+
+    <div class="tabs">
+      <div class="tablist" role="tablist" aria-label="Install method">
+        <button role="tab" id="t-uv" aria-controls="p-uv" aria-selected="true">Linux · uv</button>
+        <button role="tab" id="t-pipx" aria-controls="p-pipx" aria-selected="false" tabindex="-1">Linux · pipx</button>
+        <button role="tab" id="t-win" aria-controls="p-win" aria-selected="false" tabindex="-1">Windows · beta</button>
+      </div>
+
+      <div role="tabpanel" id="p-uv" aria-labelledby="t-uv" class="panel">
+        <ol class="steps">
+          <li><span>Check your model server is up</span><div class="cmd"><code>curl -s http://127.0.0.1:8080/v1/models</code><button class="copy" type="button">Copy</button></div></li>
+          <li><span>Install Cracked Code</span><div class="cmd"><code>uv tool install git+https://github.com/LGadd/Cracked-Code.git@v0.1.0</code><button class="copy" type="button">Copy</button></div></li>
+          <li><span>Run it in your project</span><div class="cmd"><code>cd ~/my-project &amp;&amp; cracked</code><button class="copy" type="button">Copy</button></div></li>
+        </ol>
+      </div>
+      <div role="tabpanel" id="p-pipx" aria-labelledby="t-pipx" class="panel" hidden>
+        <ol class="steps">
+          <li><span>Check your model server is up</span><div class="cmd"><code>curl -s http://127.0.0.1:8080/v1/models</code><button class="copy" type="button">Copy</button></div></li>
+          <li><span>Install Cracked Code</span><div class="cmd"><code>pipx install git+https://github.com/LGadd/Cracked-Code.git@v0.1.0</code><button class="copy" type="button">Copy</button></div></li>
+          <li><span>Run it in your project</span><div class="cmd"><code>cd ~/my-project &amp;&amp; cracked</code><button class="copy" type="button">Copy</button></div></li>
+        </ol>
+      </div>
+      <div role="tabpanel" id="p-win" aria-labelledby="t-win" class="panel" hidden>
+        <ol class="steps">
+          <li><span>Install Git for Windows and uv (the model's commands run in Git Bash)</span><div class="cmd"><code>winget install Git.Git astral-sh.uv</code><button class="copy" type="button">Copy</button></div></li>
+          <li><span>Install Cracked Code</span><div class="cmd"><code>uv tool install git+https://github.com/LGadd/Cracked-Code.git@v0.1.0</code><button class="copy" type="button">Copy</button></div></li>
+          <li><span>Run it in your project</span><div class="cmd"><code>cd C:\path\to\project; cracked</code><button class="copy" type="button">Copy</button></div></li>
+        </ol>
+        <p class="note">Tested on Windows 11 with Ollama. <a href="https://github.com/LGadd/Cracked-Code/blob/main/docs/windows.md">Full Windows guide →</a></p>
+      </div>
+    </div>
+
+    <details class="more">
+      <summary>Not on Strata? Point it at llama.cpp, Ollama or LM Studio</summary>
+      <p>Put this in <code>~/.config/cracked/config.toml</code>. These servers work but get no tuning. Strata is the tested setup.</p>
+      <div class="cmd multi"><code>base_url = "http://127.0.0.1:11434/v1"
+model = "your-model-name"</code><button class="copy" type="button">Copy</button></div>
+    </details>
+  </section>
+
+  <!-- SAFETY -->
+  <section class="wrap block">
+    <div class="safety">
+      <div class="sico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 3 6v6c0 5 3.8 9.3 9 10 5.2-.7 9-5 9-10V6z"/><path d="M12 8v5M12 16h.01"/></svg></div>
+      <div>
+        <h2>No sandbox. Plenty of seatbelts.</h2>
+        <p>Cracked runs shell commands on your machine, as you. That's what makes it useful, so it's built to make damage recoverable:</p>
+        <ul>
+          <li><b>Snapshots</b> before every turn, so <code>/undo</code> and <code>/diff</code> always work.</li>
+          <li><b>Approvals</b> with the diff shown first in manual mode. Deletes always ask.</li>
+          <li><b>A deny-list</b> for the unrecoverable: <code>rm -rf /</code>, <code>mkfs</code>, and friends.</li>
+        </ul>
+        <p class="note">Point it at a project folder, not your home folder. Use a VM for anything you can't afford to lose.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="wrap block final">
+    <h2>Give your GPU something to do.</h2>
+    <div class="oneliner">
+      <span class="prompt" aria-hidden="true">$</span>
+      <code id="final-cmd">uv tool install git+https://github.com/LGadd/Cracked-Code.git@v0.1.0</code>
+      <button class="copy" type="button" data-copy="#final-cmd" aria-label="Copy install command">Copy</button>
+    </div>
+    <p class="note">Linux · Windows (beta) · Python 3.11+ · MIT licence</p>
   </section>
 </main>
 
-<footer class="wrap foot">
-  <p><b>Cracked Code 0.1.0</b> · MIT licence · <a href="https://github.com/LGadd/Cracked-Code">GitHub</a> · <a href="https://github.com/LGadd/Cracked-Code/blob/main/CHANGELOG.md">Changelog</a> · <a href="https://github.com/LGadd/Cracked-Code/issues">Report a bug</a></p>
+<footer class="foot">
+  <div class="wrap footin">
+    <span class="brand small"><span class="cursor" aria-hidden="true">&gt;_</span> cracked<span class="dim">code</span> 0.1.0</span>
+    <nav aria-label="Footer">
+      <a href="https://github.com/LGadd/Cracked-Code">GitHub</a>
+      <a href="https://github.com/LGadd/Cracked-Code/blob/main/CHANGELOG.md">Changelog</a>
+      <a href="https://github.com/LGadd/Cracked-Code/blob/main/docs/setup.md">Config</a>
+      <a href="https://github.com/LGadd/Cracked-Code/issues">Report a bug</a>
+    </nav>
+  </div>
 </footer>
 </body>
 </html>
