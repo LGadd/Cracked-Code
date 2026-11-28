@@ -139,12 +139,39 @@
       </article>
     </div>
 
+    <h3 class="subhead">Approval modes</h3>
+    <p class="sub small">How much it asks before it acts.</p>
     <div class="modes">
       <div class="mode"><span class="chip c1">MANUAL</span><p>Edits ask first, with the diff shown. The default.</p></div>
       <div class="mode"><span class="chip c2">FUCK IT MODE</span><p>Everything auto-approved. Deletes still ask.</p></div>
       <div class="mode"><span class="chip c3">INVESTIGATE</span><p>Read only. It looks, reports, and stops.</p></div>
       <p class="modehint"><kbd>Shift</kbd> + <kbd>Tab</kbd> switches mode, even mid-task.</p>
     </div>
+
+    <h3 class="subhead">Task modes, one command away</h3>
+    <p class="sub small">Turn each on or off from the prompt, even while a task runs. Your choice is saved for next time.</p>
+    <div class="tmodes">
+      <article class="tmode t1">
+        <div class="thead"><span class="chip c1">LOCKED IN</span><code>/lockedin</code></div>
+        <h4>For long tasks</h4>
+        <p>Every ask, failure and changed file goes in a ledger that survives compaction, so nothing you asked for gets lost. Turns the auto checklist on too.</p>
+      </article>
+      <article class="tmode t2">
+        <div class="thead"><span class="chip c4">ONE SHOT</span><code>/oneshot</code></div>
+        <h4>Make it and stop</h4>
+        <p>The model makes the change and stops: no test runs, no re-reads. You test it. The quickest way through small changes.</p>
+      </article>
+      <article class="tmode t3">
+        <div class="thead"><span class="chip c5">AUTO CHECKLIST</span><code>/autochecklist</code></div>
+        <h4>A plan when it needs one</h4>
+        <p>A long task without a checklist gets one after 8 turns, and the harness walks the model through it step by step.</p>
+      </article>
+    </div>
+    <figure class="statusbar" aria-label="The bar under the prompt: LOCKED IN on, one shot off, AUTO CHECKLIST on, then the model, context use, tasks and time.">
+      <figcaption>Always on screen: the bar under the prompt shows each mode as <b>● on</b> or <b>○ off</b>.</figcaption>
+      <pre aria-hidden="true"><span class="g">&gt;_</span> <span class="caretbox"></span>
+<span class="g b">● LOCKED IN</span>  <span class="m">○ one shot</span>  <span class="g b">● AUTO CHECKLIST</span>  <span class="m">│  qwen3.8-flash-next · ctx 12% · 3 tasks · 14m · /help</span></pre>
+    </figure>
   </section>
 
   <!-- INSTALL -->

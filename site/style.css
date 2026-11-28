@@ -234,3 +234,21 @@ kbd { font: .82rem var(--mono); padding: 2px 8px; border-radius: 6px; border: 1p
 .mrow.win i { background: var(--neon); box-shadow: 0 0 14px rgba(43,255,136,.5); }
 @media (max-width: 860px) { .stat br { display: none; } }
 .oneliner code { background: none; border: 0; padding: 0; }
+
+/* task modes */
+.subhead { font-size: clamp(1.4rem, 2.6vw, 1.8rem); margin: 64px 0 10px; }
+.sub.small { font-size: 1.02rem; margin-bottom: 24px; }
+.tmodes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.tmode { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 24px; position: relative; overflow: hidden; backdrop-filter: blur(8px); }
+.tmode::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--neon); }
+.tmode.t2::before { background: var(--pink); } .tmode.t3::before { background: #5cc8ff; }
+.thead { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.tmode h4 { font: 700 1.2rem/1.2 var(--display); letter-spacing: -.02em; margin: 18px 0 8px; }
+.tmode p { color: var(--muted); margin: 0; font-size: .97rem; }
+.c4 { background: var(--pink); } .c5 { background: #5cc8ff; }
+.statusbar { margin: 18px 0 0; border: 1px solid var(--line2); border-radius: 14px; background: #050908; overflow: hidden; }
+.statusbar figcaption { padding: 12px 18px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .92rem; background: rgba(255,255,255,.02); }
+.statusbar figcaption b { color: var(--text); }
+.statusbar pre { margin: 0; padding: 16px 18px; font-size: .88rem; line-height: 1.9; color: #8fc9a3; overflow-x: auto; }
+.caretbox::after { content: "▌"; color: var(--neon); }
+@media (max-width: 860px) { .tmodes { grid-template-columns: 1fr; } }
