@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **Mode switches in the terminal:** `/lockedin`, `/oneshot` and `/autochecklist` (`on`, `off`, or alone to flip;
+  also mid-task) apply at once and save to the config file. The banner and the bar under the prompt show all three
+  as on or off; the live footer names the ones that are on.
 - **Windows is supported in beta.** A clean install from GitHub on Windows 11 (Python 3.14, Git for Windows, Ollama
   with `glm-5.3-flash:cloud`) passed a write-run task, `cracked -c`, an edit-run task and `/undo`. The setup and its
   install steps are in `docs/windows.md`.

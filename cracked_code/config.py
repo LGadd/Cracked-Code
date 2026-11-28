@@ -26,7 +26,7 @@ DEFAULTS = {
     "reasoning_budget": 0,   # most thinking tokens per reply, sent as reasoning_budget_tokens (Strata; llama.cpp); 0 = not sent
     "auto_think": True,    # auto thinking: effort medium, capped at 2048 tokens a turn (384 after a clean step); false = the model's own default thinking
     "locked_in": False,    # LOCKED IN mode for long tasks: every ask, error and changed file survives compaction, no folding, no 384 cap; a little slower
-    "one_shot": False,     # ONE SHOT: the model makes the change and stops without running tests or checks, you test it; new sessions only
+    "one_shot": False,     # ONE SHOT: the model makes the change and stops without running tests or checks, you test it; /oneshot switches it mid-session
     "auto_checklist": False,  # a long task with no checklist (8 turns, or after a compaction) gets one, walked step by step; LOCKED IN's switch turns it on
     "compact_at": 0.4,     # auto-compact at this share of context
     "warn_mb": 1024,       # ask before starting in a bigger workspace; 0 = never ask
@@ -90,6 +90,18 @@ def load(file: Path | None = None) -> tuple[dict, dict]:
         except ValueError:
             raise ValueError(f"{k} = {raw!r} ({src}) is not a {type(default).__name__}") from None
     return values, sources
+
+
+def set_key(key: str, value, file: Path | None = None) -> Path:
+    """Change one key in the config file and keep the file's other values (what the dashboard's switches do).
+    A file that doesn't parse raises ValueError and is left alone."""
+    file = file or path()
+    try:
+        raw = tomllib.loads(file.read_text(encoding="utf-8")) if file.exists() else {}
+    except tomllib.TOMLDecodeError as e:
+        raise ValueError(f"{file} does not parse: {e}") from None
+    raw[key] = value
+    return save(raw, file)
 
 
 def save(values: dict, file: Path | None = None) -> Path:

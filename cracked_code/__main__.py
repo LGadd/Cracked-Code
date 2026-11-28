@@ -184,9 +184,7 @@ def main(argv: list[str] | None = None) -> int:
         ui.out(banner([("model", f"{args.model} @ {args.base_url}"), ("workspace", where),
                        ("keys", "type a task · /help · Shift+Tab mode · Ctrl+O details · Esc stops · Ctrl-D quits"),
                        ("turns", f"{'no limit' if args.max_turns < 1 else args.max_turns} per task (/turns N to change)"),
-                       *([("locked in", "every ask and failure survives compaction (config locked_in)")] if ctx.locked else []),
-                       *([("one shot", "the model makes the change and stops, you test it (config one_shot)")]
-                         if cfg["one_shot"] else [])]) + "\n")
+                       ("modes", ui.modes_text(session.modes()) + ui.paint("   /lockedin /oneshot /autochecklist", ui.MUTED))]) + "\n")
     if args.resume:
         if path := repl.latest_session(ws):
             session.resume(path)

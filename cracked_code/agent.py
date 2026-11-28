@@ -116,12 +116,21 @@ ONE_SHOT = (
 )
 
 
-def one_shot(system: str) -> str:
-    """The system prompt in ONE SHOT mode: every self-check rule swapped for "make it and stop"."""
+def one_shot(system: str, on: bool = True) -> str:
+    """The system prompt in ONE SHOT mode: every self-check rule swapped for "make it and stop".
+    on=False swaps them back (/oneshot off mid-session). Already in that state: returned as it is."""
+    if is_one_shot(system) == on:
+        return system
     for old, new in ONE_SHOT:
+        old, new = (old, new) if on else (new, old)
         assert old in system, old[:40]  # the SYSTEM text was edited without updating ONE_SHOT
         system = system.replace(old, new)
     return system
+
+
+def is_one_shot(system: str) -> bool:
+    """Whether this system prompt is in ONE SHOT mode: the prompt itself is the truth, also after /resume."""
+    return all(new in system for _, new in ONE_SHOT)
 
 
 MAP_MAX = 150  # files listed in the startup map; more and the model is told to look for itself
@@ -797,11 +806,14 @@ def _follow_config(ctx, say) -> None:
         values = config.load()[0]
     except ValueError:
         return  # a half-written or broken file: keep the mode as it is
-    locked, ctx.auto_checklist = values["locked_in"], values["auto_checklist"]
+    locked, checklist = values["locked_in"], values["auto_checklist"]
     ui.TELEGRAM = ui.telegram_load() if values["telegram"] else None
     if locked != ctx.locked:
         ctx.locked = locked
         say(f". LOCKED IN mode {'on' if locked else 'off'} (config changed)")
+    if checklist != ctx.auto_checklist:
+        ctx.auto_checklist = checklist
+        say(f". auto checklist {'on' if checklist else 'off'} (config changed)")
 
 
 def _ledger_ask(ctx, text: str) -> None:

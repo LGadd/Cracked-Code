@@ -331,6 +331,26 @@ class InputBox(unittest.TestCase):
         self.assertIn(">_ ▌", screen(self.out.getvalue())[-2])  # back to one empty row
 
 
+class ModeCommandsMidTask(unittest.TestCase):
+    def test_switch_typed_mid_task_runs_now_and_is_not_queued(self):
+        v = live.Live(SimpleNamespace(assume_yes=False, investigate=False), io.StringIO())
+        v.typed = "/oneshot on"
+        with mock.patch.dict(ui.MODE_CMDS, {"/oneshot": lambda arg: f"switched {arg}"}), \
+                mock.patch.object(ui, "out") as said:
+            v.steer()
+        said.assert_called_once_with("switched on")
+        self.assertEqual((v.queue, v.typed), ([], ""))
+
+    def test_footer_shows_the_modes_that_are_on(self):
+        out = io.StringIO()
+        v = live.Live(SimpleNamespace(assume_yes=False, investigate=False), out)
+        with mock.patch.object(ui, "MODES", lambda: {"LOCKED IN": True, "ONE SHOT": False, "AUTO CHECKLIST": True}), \
+                mock.patch.object(live, "width", return_value=100):
+            v._draw()
+        self.assertIn("LOCKED IN · AUTO CHECKLIST", out.getvalue())
+        self.assertNotIn("ONE SHOT", out.getvalue())
+
+
 class Summary(unittest.TestCase):
     """2026-11-27: the done line closes a task (a rule under the answer) and counts the files changed."""
     def test_held_summary_counts_files_and_is_not_printed(self):

@@ -236,6 +236,8 @@ class Live:
         if self.queue:
             info.append(f"queued {len(self.queue)}")
         mode = ui.mode(self.guard, prompt=False)
+        if on := ui.modes_on():  # LOCKED IN, ONE SHOT, AUTO CHECKLIST: only the ones that are on, to save room
+            mode += ui.paint(" · ".join(on), ui.NEON, bold=True) + " "
         tail = ui.cut(" · ".join(info), max(0, w - ui.cells(ui.CODES.sub("", mode))))  # narrow: cut, never wrap
         numbers = mode + ui.paint(tail, ui.MUTED)
         # shortcut: a resize mid-task can leave a stray row until the next printed line; redraw on SIGWINCH if it bites
@@ -312,8 +314,11 @@ class Live:
 
     def steer(self) -> None:
         """Enter mid-task: queue the typed line; the model reads it before its next step."""
-        if self.typed.strip().split()[:1] == ["/jobs"]:  # answered now, not queued: a stuck command blocks the queue
-            ui.out(ui.paint(tools.jobs_command(self.typed.strip()[5:]), ui.INK2))
+        word, _, arg = self.typed.strip().partition(" ")
+        if word == "/jobs":  # answered now, not queued: a stuck command blocks the queue
+            ui.out(ui.paint(tools.jobs_command(arg), ui.INK2))
+        elif word in ui.MODE_CMDS:  # /lockedin, /oneshot, /autochecklist: switched now, the model's next turn sees it
+            ui.out(ui.MODE_CMDS[word](arg))
         elif self.typed.strip():
             self.queue.append(self.typed.strip())
             ui.out(ui.paint(f"  queued for the model: {self.typed.strip()}", ui.INK2))

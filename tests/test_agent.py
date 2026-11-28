@@ -673,3 +673,12 @@ class TaskIndex(unittest.TestCase):
         self.assertTrue(agent._failed("[exit -11]\nSegmentation fault"))
         self.assertTrue(agent._failed("[exit 2]"))
         self.assertFalse(agent._failed("[exit 0]"))
+
+
+class OneShotSwitch(unittest.TestCase):
+    def test_one_shot_goes_both_ways_and_is_read_from_the_prompt(self):
+        on = agent.one_shot(agent.SYSTEM)
+        self.assertTrue(agent.is_one_shot(on))
+        self.assertFalse(agent.is_one_shot(agent.SYSTEM))
+        self.assertEqual(agent.one_shot(on, True), on)  # already on: unchanged
+        self.assertEqual(agent.one_shot(on, False), agent.SYSTEM)

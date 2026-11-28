@@ -105,6 +105,7 @@ task. Type while it works and press Enter to steer it: the model reads your mess
 | `/plan <goal>` | research and write a plan (read-only), then run it step by step |
 | `/btw <question>` | a side question answered from the conversation, not kept |
 | `/init` | draft a `CRACKED.md` (project rules) from the repo |
+| `/lockedin`, `/oneshot`, `/autochecklist` | switch the three task modes below: `on`, `off`, or alone to flip it. Works mid-task too |
 | `/incognito` | web search and fetch off, and out of every request (saves ~150 tokens each); again to turn back on |
 | `/model` | list the server's models, or `/model <id>` to switch for this session |
 | `/turns N` | most model round trips per task (-1 = no limit) |
@@ -129,13 +130,17 @@ task. Type while it works and press Enter to steer it: the model reads your mess
 
 ### Modes for long and quick tasks
 
-Set these in `~/.config/cracked/config.toml`:
+Switch them with `/lockedin`, `/oneshot` and `/autochecklist` (`on`, `off`, or alone to flip). The change applies
+to the running session at once and is saved to `~/.config/cracked/config.toml`, so new sessions start the same way.
+You can always see where they stand: the startup banner and the bar under the prompt show each one as **● ON** or
+**○ off**, and while a task runs the footer names the ones that are on.
 
 - **LOCKED IN** (`locked_in = true`): for long tasks. Every ask (queued messages too), failed call and changed file
   is kept in a ledger that is restated every 10 turns and survives compaction, so nothing you asked for gets lost.
-  A little slower, because the history stays bigger. A running session picks up the change at its next turn.
+  A little slower, because the history stays bigger. Turning it on also turns the auto checklist on.
 - **ONE SHOT** (`one_shot = true`): the model makes the change and stops, with no tests, builds or re-reads to
-  confirm. You test it. The harness's own syntax check on `.py`, `.json` and `.js` writes still runs. New sessions only.
+  confirm. You test it. The harness's own syntax check on `.py`, `.json` and `.js` writes still runs. Switching it
+  mid-session changes the system prompt, so the next request reads the whole prompt once.
 - **Auto checklist** (`auto_checklist = true`): a long task without a checklist (8 turns, or right after a
   compaction) gets one, and the harness walks the model through it step by step, like `/plan`.
 

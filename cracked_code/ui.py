@@ -71,6 +71,8 @@ WAIT_PING = 15.0      # seconds a question may wait unanswered before it is sent
 ASK = None           # harness_input's line reader; the REPL swaps in prompt.ask (Shift+Tab, Ctrl+O)
 CHOOSE = None        # choose()'s arrow-key menu; the REPL swaps in prompt.choose
 PROMPT = ">_ "        # where you type: the REPL prompt and the box mid-task (was "you> " until 2026-11-12)
+MODES = None          # () -> {"LOCKED IN": bool, "ONE SHOT": bool, "AUTO CHECKLIST": bool}: the REPL sets it
+MODE_CMDS: dict = {}  # "/lockedin" -> fn(arg) -> message: the switches, also typed mid-task
 LIVE = None           # live.Live while a task runs in a colour terminal: the spinner line and mid-task keys
 # Everything the colour terminal printed this session, as (kind, text): "all" always shows, "detail"
 # only expanded, "compact" only collapsed. Ctrl+O clears the screen and replays it in the other view.
@@ -104,6 +106,20 @@ def mode(guard, prompt: bool = True) -> str:
     if guard.assume_yes:
         return chip("FUCK IT MODE", CRIT, prompt) + " "
     return chip("INVESTIGATE", AMBER, prompt) + " " if guard.investigate else ""
+
+
+def modes_text(modes: dict) -> str:
+    """The three task modes, every one shown so on and off are both visible: ● NAME when on (neon), ○ name when off
+    (muted). The shapes differ too, so it reads without colour."""
+    if not ON:
+        return " · ".join(f"{name} {'on' if on else 'off'}" for name, on in modes.items())
+    return "  ".join(paint(f"● {name}", NEON, bold=True) if on else paint(f"○ {name.lower()}", MUTED)
+                     for name, on in modes.items())
+
+
+def modes_on() -> list[str]:
+    """The task modes that are on now (none without a REPL)."""
+    return [name for name, on in MODES().items() if on] if MODES else []
 
 
 def mode_line(guard) -> str:

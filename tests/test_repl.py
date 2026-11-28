@@ -137,6 +137,42 @@ class Commands(unittest.TestCase):
     def tearDown(self):
         self._tmp.cleanup()
 
+    def test_mode_switches_apply_now_save_to_config_and_show(self):
+        """2026-11-28: /lockedin, /oneshot, /autochecklist switch the modes the dashboard used to own."""
+        cfg = self.ws / "config.toml"
+        cfg.write_text('model = "keep-me"\n')
+        self.msgs[0]["content"] = agent.SYSTEM
+        with mock.patch.dict(os.environ, {"HARNESS_CONFIG": str(cfg)}):
+            said = self.r.switch("locked_in", "")  # no argument: switch it
+            self.assertTrue(self.r.ctx.locked)
+            self.assertTrue(self.r.ctx.auto_checklist)  # as the dashboard's LOCKED IN switch does
+            self.assertIn("LOCKED IN on", said)
+            text = cfg.read_text()
+            self.assertIn("locked_in = true", text)
+            self.assertIn("auto_checklist = true", text)
+            self.assertIn('model = "keep-me"', text)  # the rest of the file is kept
+            self.r.switch("auto_checklist", "off")
+            self.assertFalse(self.r.ctx.auto_checklist)
+            self.assertIn("auto_checklist = false", cfg.read_text())
+            self.r.switch("one_shot", "on")
+            self.assertTrue(agent.is_one_shot(self.msgs[0]["content"]))
+            self.assertEqual(self.r.modes(), {"LOCKED IN": True, "ONE SHOT": True, "AUTO CHECKLIST": False})
+            self.r.switch("one_shot", "off")
+            self.assertEqual(self.msgs[0]["content"], agent.SYSTEM)  # back exactly as it was
+            self.assertIn("on | off", self.r.switch("locked_in", "maybe"))
+            self.assertTrue(self.r.ctx.locked)  # a bad argument changes nothing
+        self.assertIn("LOCKED IN on · ONE SHOT off · AUTO CHECKLIST off", ui.modes_text(self.r.modes()))
+        self.assertIn("●", ui.modes_text.__doc__)
+
+    def test_mode_switch_keeps_working_when_the_config_is_broken(self):
+        cfg = self.ws / "config.toml"
+        cfg.write_text("this is = = not toml")
+        with mock.patch.dict(os.environ, {"HARNESS_CONFIG": str(cfg)}):
+            said = self.r.switch("auto_checklist", "on")
+        self.assertTrue(self.r.ctx.auto_checklist)
+        self.assertIn("this session only", said)
+        self.assertEqual(cfg.read_text(), "this is = = not toml")  # never overwritten
+
     def test_shell_output_is_not_added_to_the_conversation(self):
         with mock.patch.object(ui, "out", lambda text, kind="all": self.said.append(text)):
             self.r.shell("echo hi")

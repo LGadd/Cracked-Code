@@ -19,7 +19,7 @@ import time
 import urllib.request
 from pathlib import Path
 
-from . import agent, images, llm, plan, safety, tools, ui
+from . import agent, config, images, llm, plan, safety, tools, ui
 
 HELP = """\
 Keys
@@ -43,6 +43,9 @@ Commands
 /export  save this conversation as markdown
 /turns N max model round trips per task (-1 = no limit)
 /incognito web search and fetch off and out of every request (saves ~150 tokens each); again to turn back on
+/lockedin LOCKED IN for long tasks: every ask, failure and changed file survives compaction. on/off, or alone to switch
+/oneshot ONE SHOT: the model makes the change and stops; you test it. on/off, or alone to switch
+/autochecklist a long task with no checklist gets one, walked step by step. on/off, or alone to switch
 /jobs    shell commands running now; /jobs kill N (or all) stops one. Also works mid-task
 /btw Q   a quick side question: answered from the conversation, no tools, not kept
 /init    draft CRACKED.md (project rules) from this repo; /init <hint> to steer it
@@ -55,7 +58,8 @@ Plans
          /plan skip N · /plan back (un-tick the last step)
          Esc pauses a running plan; mid-task, type "+ something" and Enter to add it as a plan step"""
 COMMANDS = ["/undo", "/diff", "/clear", "/resume", "/context", "/model", "/copy", "/export",
-            "/turns", "/incognito", "/jobs", "/plan", "/btw", "/init", "/help", "/quit"]
+            "/turns", "/incognito", "/lockedin", "/oneshot", "/autochecklist", "/jobs", "/plan", "/btw", "/init", "/help", "/quit"]
+SWITCHES = {"/lockedin": "locked_in", "/oneshot": "one_shot", "/autochecklist": "auto_checklist"}  # command -> config key
 DESCRIBE = dict(ln.split(None, 1) for ln in HELP.splitlines() if ln.startswith("/")) | {"/quit": "quit (the session is saved)"}
 BTW = ("[Side question between tasks. Answer briefly from this conversation and what you know. "
        "No tools. This exchange is not kept.]\n\n{q}")
@@ -281,6 +285,8 @@ class Repl:
         self.draft = ""                 # text the next prompt starts with
         ctx.guard.explain = lambda why: agent.explain(self.model, self.messages,  # /clear and /model swap these
                                                       tools.schemas(ctx.vision, web=not ctx.incognito), why)
+        ui.MODES = self.modes  # the status bar, the banner and the live footer show these
+        ui.MODE_CMDS = {cmd: (lambda arg, key=key: self.switch(key, arg)) for cmd, key in SWITCHES.items()}
 
     # ---------------------------------------------------------------- terminal set-up
     def setup_prompt(self) -> None:
@@ -298,15 +304,62 @@ class Repl:
         """Pre-fill the next prompt with text the user already typed."""
         self.draft = draft
 
+    def modes(self) -> dict:
+        """The task modes as they are now in this session (the dashboard's switches reach ctx at the next turn)."""
+        return {"LOCKED IN": self.ctx.locked, "ONE SHOT": agent.is_one_shot(self.messages[0]["content"]),
+                "AUTO CHECKLIST": self.ctx.auto_checklist}
+
+    def switch(self, key: str, arg: str) -> str:
+        """/lockedin, /oneshot, /autochecklist: on, off, or (no argument) the other way. Applies to this session at
+        once and is saved to the config file like the dashboard switch, so new sessions and the dashboard agree."""
+        name = {"locked_in": "LOCKED IN", "one_shot": "ONE SHOT", "auto_checklist": "AUTO CHECKLIST"}[key]
+        cmd = next(c for c, k in SWITCHES.items() if k == key)
+        a = arg.strip().lower()
+        if a not in ("", "on", "off"):
+            return ui.paint(f"{cmd} on | off, or {cmd} alone to switch it", ui.AMBER)
+        want = (not self.modes()[name]) if not a else a == "on"
+        notes, saved = [], {key: want}
+        if key == "locked_in":
+            self.ctx.locked = want
+            if want and not self.ctx.auto_checklist:  # as the dashboard's LOCKED IN switch does
+                self.ctx.auto_checklist = saved["auto_checklist"] = True
+                notes.append("auto checklist is on too")
+        elif key == "auto_checklist":
+            self.ctx.auto_checklist = want
+        else:
+            before = self.messages[0]["content"]
+            self.messages[0]["content"] = agent.one_shot(before, want)
+            if self.messages[0]["content"] != before:
+                notes.append("the system prompt changed, so the next request reads the whole prompt once")
+        try:
+            for k, v in saved.items():
+                config.set_key(k, v)
+            self.ctx.config_mtime = config.path().stat().st_mtime  # our own write: the follower stays quiet
+            notes.append("saved to the config file")
+        except (OSError, ValueError) as e:
+            notes.append(f"this session only: the config file was not changed ({e})")
+        return (ui.paint(f"{name} {'on' if want else 'off'}: " + "; ".join(notes), ui.NEON if want else ui.INK2)
+                + "\n" + ui.modes_text(self.modes()))
+
+    def cmd_lockedin(self, arg: str) -> None:
+        ui.out(self.switch("locked_in", arg))
+
+    def cmd_oneshot(self, arg: str) -> None:
+        ui.out(self.switch("one_shot", arg))
+
+    def cmd_autochecklist(self, arg: str) -> None:
+        ui.out(self.switch("auto_checklist", arg))
+
     def status(self) -> str:
-        """The muted line above `>_`: model, context, tasks, session age."""
+        """The line under `>_`: the task modes (each on or off), then model, context, tasks, session age."""
         mins = int((datetime.datetime.now() - self.started).total_seconds() // 60)
         tasks = sum(1 for m in self.messages if m["role"] == "user")
         p = self.ctx.plan
         shown = "" if p is None or p.state == "done" else f"{p.label()} · " if p.state == "running" else (
             f"{'plan' if p.source == 'user' else '☐'} waiting: /plan · ")
-        return ui.paint(f"{shown}{self.model.model} · ctx {100 * self.ctx.usage // self.args.context}% · "
-                        f"{tasks} task{'s' if tasks != 1 else ''} · {mins}m · /help", ui.MUTED)
+        return ui.modes_text(self.modes()) + ui.paint(
+            f"  │  {shown}{self.model.model} · ctx {100 * self.ctx.usage // self.args.context}% · "
+            f"{tasks} task{'s' if tasks != 1 else ''} · {mins}m · /help", ui.MUTED)
 
     def read(self) -> str:
         """One task. A line ending in \\ continues on the next; a paste keeps its newlines."""
