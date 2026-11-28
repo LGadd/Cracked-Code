@@ -105,11 +105,79 @@ task. Type while it works and press Enter to steer it: the model reads your mess
 | `/plan <goal>` | research and write a plan (read-only), then run it step by step |
 | `/btw <question>` | a side question answered from the conversation, not kept |
 | `/init` | draft a `CRACKED.md` (project rules) from the repo |
-| `/resume`, `/context`, `/copy`, `/export` | sessions, context use, the last answer |
+| `/incognito` | web search and fetch off, and out of every request (saves ~150 tokens each); again to turn back on |
+| `/model` | list the server's models, or `/model <id>` to switch for this session |
+| `/turns N` | most model round trips per task (-1 = no limit) |
+| `/clear` | start a new conversation (the old one stays saved) |
+| `/resume`, `/context`, `/copy`, `/export` | the last session, what fills the context, copy the last answer, save the chat as markdown |
 | `!cmd` | your own shell command; the output is not sent to the model |
 | `@path` | send a file with the task (Tab completes; `@pars` finds files anywhere) |
 
-Ctrl+B moves a long shell command to the background (`/jobs` lists and kills them).
+### Keys
+
+| Key | What it does |
+|---|---|
+| **Enter** | send. End a line with `\` (or press **Alt+Enter**) for a new line; pasted text keeps its newlines |
+| **Ctrl+X Ctrl+E** | write the task in `$EDITOR` |
+| **Up/Down**, **Ctrl+R** | past tasks, and search them |
+| **Ctrl+C** | clear the line |
+| **Shift+Tab** | change mode, also mid-task |
+| **Ctrl+O** | details: reasoning, every turn, diffs. Toggles, and replays the session in the other view |
+| **Esc** | stop the task. The conversation is kept: type to carry on, or `/undo` |
+| **Ctrl+B** | move a running shell command to the background (`/jobs` lists and kills them) |
+| type + **Enter** mid-task | steer it; `+ something` adds a step to a running plan |
+
+### Modes for long and quick tasks
+
+Set these in `~/.config/cracked/config.toml`:
+
+- **LOCKED IN** (`locked_in = true`): for long tasks. Every ask (queued messages too), failed call and changed file
+  is kept in a ledger that is restated every 10 turns and survives compaction, so nothing you asked for gets lost.
+  A little slower, because the history stays bigger. A running session picks up the change at its next turn.
+- **ONE SHOT** (`one_shot = true`): the model makes the change and stops, with no tests, builds or re-reads to
+  confirm. You test it. The harness's own syntax check on `.py`, `.json` and `.js` writes still runs. New sessions only.
+- **Auto checklist** (`auto_checklist = true`): a long task without a checklist (8 turns, or right after a
+  compaction) gets one, and the harness walks the model through it step by step, like `/plan`.
+
+### Images
+
+With a vision model (Cracked reads this from the server), attach an image with `@shot.png` in a task or
+`cracked --image shot.png -p "…"`, and the model can open images itself with `see_image`. Images over the size cap are shrunk to
+1024 px JPEG first (needs `ffmpeg`).
+
+### Context, kept small for you
+
+- Tool output over 6,000 characters goes to a file; only a preview enters the context, and the model reads the rest if it needs it.
+- The history is compacted automatically at 40% of the window (`compact_at`).
+- Once the prompt passes 24,000 tokens, finished tasks fold down to the ask and the answer.
+- **Loop check:** 4 failed calls in a row, the same call 3 times, or editing one file over and over makes the model
+  stop and rethink. If it is still stuck, it asks you for a hint instead of burning turns.
+
+### Command line
+
+```bash
+cracked                          # interactive, in the current folder
+cracked -p "task"                # one task and exit; repeat -p to run several tasks in one session
+cracked -c                       # carry on with this folder's last session (sessions save after every task)
+cracked --yes                    # start in Fuck It Mode
+cracked --workspace ~/proj       # work in another folder
+cracked --image shot.png -p "…"  # attach an image (repeatable)
+cracked --max-turns 40           # stop and report after 40 model round trips
+cracked --show-config            # every setting and where it came from
+```
+
+### Handy settings
+
+All of them, with defaults, are in [docs/setup.md](docs/setup.md). The ones people change most:
+
+| Key | Default | What it does |
+|---|---|---|
+| `theme` | `"dark"` | `"light"` for a light terminal background |
+| `narrate` | `false` | one short "what I'm doing" line per turn, shown as `● …` |
+| `bell` | `true` | ring the terminal bell when a task ends or an approval waits |
+| `snapshot` | `true` | `false` turns snapshots off (no `/undo` or `/diff`) |
+| `auto_think` | `true` | thinking at medium effort, capped per turn; `false` = the model's own default |
+| `max_turns` | `-1` | model round trips per task; -1 = no limit |
 
 ## Project rules: CRACKED.md
 
